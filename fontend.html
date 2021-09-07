@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+
+        async function getBody(){
+            return await fetch('http://localhost:3000/resume-body').then( res => res.text() );
+        }
+
+        async function loadViewFilesJSON(){
+            return await fetch('http://localhost:3000/load-view-json')
+                .then(response => response.json());
+                //.then(data => console.log(data));
+        }
+
+        async function loadDefaultScheme(){
+            return await fetch('http://localhost:3000/load-scheme')
+            .then(response => response.json());
+        }
+
+
+       
+
+        const form = {
+            "titleName": "Mansoor Soomro",
+            "titleDescription": "A year's worth of experience in software development having substantial practicality in server-side and frontend technology",
+        
+            "email": "mansoorsoomro1997@gmail.com",
+            "number": "+4915752612277",
+            "residence": "Chemnitz, Germany",
+            "linkedinUrl": "linkedin.com/in/mansoor-soomro-9970a8127/",
+            "columns": [
+                [     
+                    {
+                        "title": "WORK EXPERIENCE",
+                        "section": [
+                            {
+                                "title": "Software Developer",
+                                "subtitle": "AKSIQ",
+                                "date": {
+                                    "from": "12/2019",
+                                    "to": "Present"
+                                },
+                                "location": "Karachi, Pakistan",
+                                "smallText": [ ["Project and Task"] ],
+                                "list": [
+                                    {
+                                        "heading": "PriceIQ",
+                                        "paragraph": "An anti-money laundering system for SCB(Standard Charted Bank), that identifies procedure for different level of price verfications that reports suspicious transactions when ample difference in prices are identified in regards to trading products. From this the bank is able to identify the integrity of the proices from reliable internet resources and historical prices of its customer"
+                                    }, 
+                                    {
+                                        "heading": "Transaction Mointering System",
+                                        "paragraph": "A GUI based map chart system that allows user (SCB) to identify price related transactions for their customer from several different countries"
+                                    },
+                                    {
+                                        "heading": "Customer Trade Risk Profiling",
+                                        "paragraph": "A system for (SCB) that will manage trade risk with a customer based on customer related goods, that customer will trade, and other party details. This will help the bank to identify the risks of trading based on every customer detail"
+                                    },
+                                    {
+                                        "heading": "Rendertron",
+                                        "paragraph": "manipulating an existing schreenshot Rendertron API bot to take snapshots of products of various B2B websites"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                [
+                    {
+                        "title": "SKILLS",
+                        "chips": [
+                            "JavaScript/TypeScript", "Angular 2+", ".Net Core", "Node JS", "Sql Server", "PostgresSQL", "Git", "Azure Devops", "HTML", "CSS", "JAVA"
+                        ]
+                    },
+                    {
+                        "title": "PERSONAL PROJECTS",
+                        "section": [
+                            {
+                                "list": [
+                                    {
+                                        "heading": "Socail Application",
+                                        "paragraph": "Project tools: CodeIgniter, MySQL - A Web based application where users can sign-in/sign-up, Add Delete, Update his post. User willo be able to follow other people and see their post. User will be able to reat or like to their post"
+                                    },
+                                    {
+                                        "heading": "Todo Application",
+                                        "paragraph": "Project tools: Laravel, MySql - A Web based Todo Applicatioon, where user can sign-in/sign-up an can make a specific project that can be deleted, updated and can perform a complete operation. User can also create project-based task and set deadline of that specific time"
+                                    },
+                                    {
+                                        "heading": "Pharmacy Management System",
+                                        "paragraph": "Project tools: Angualr 2+, .Net Core, Sql Server - A role-based system that allows admin to manage pharmacist company and medicines. Admin will be able to check Invoice and Sales Report Tole pharmachist will be able to manage medicine orders and will be able to chekc monthly, weekly and daily details."
+                                    }
+                                ]
+                            }
+                        ]                    
+                    }
+                ]
+            ]
+        }
+
+        function renderIframe(iframe, views){
+            for(let column of form.columns){
+                let columnHTML = new DOMParser().parseFromString(views['column'], 'text/xml').documentElement;
+                // iframe.contentWindow.document.getElementById('main-body').appendChild(columnHTML);
+
+            //    iframe.contentWindow.addNode(iframe.contentWindow.document.getElementById('main-body'), columnHTML);
+
+                for(let item of column){
+
+                    if(views['item']){
+                        let itemHTML = new DOMParser().parseFromString(views['item'], 'text/xml').documentElement;
+                        
+                        let titleHTML = new DOMParser().parseFromString(views['title'], 'text/xml').documentElement;
+                        titleHTML.innerHTML = item.title
+                        
+                        itemHTML.appendChild(titleHTML);
+                        columnHTML.appendChild(itemHTML);
+                        
+
+                        // iframe.contentWindow.document.getElementById('main-body').appendChild (columnHTML, itemHTML);
+                    }
+
+
+                    // for(let section of item.section){
+                        
+                    // }
+
+                }
+
+                iframe.contentWindow.document.getElementById('main-body').appendChild(columnHTML);
+
+
+            }
+
+        }
+
+        window.onload = async function(){
+
+            //const body = await getBody();
+            //console.log(body);
+
+            const iframe = document.createElement('iframe');
+
+
+            const resumeResult = await fetch('http://localhost:3000/test', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(form)
+            }).then(x => x.text());
+
+            iframe.srcdoc = resumeResult;
+
+            iframe.setAttribute('name', 'preview');
+            iframe.style.width = '100%';
+            iframe.height = '500px';
+            iframe.style.border = 'none';
+            iframe.style.margin = '0';
+            iframe.style.padding = '0';
+
+            iframe.setAttribute('id', 'preview')
+
+            document.body.appendChild(iframe);
+
+
+            const result = await loadViewFilesJSON();
+            const scheme = await loadDefaultScheme();
+
+
+            const views = {};
+            
+            for(let i = 0; i < result.files.length; i++){
+                const response = await fetch('http://localhost:3000/load-view', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify( { path: result.path, filename: result.files[i]  }  )
+                }).then(res => res.text())
+
+
+                views[scheme[result.files[i]]] = response;
+
+                //views.push(response);
+            }
+
+
+            renderIframe(iframe, views);
+            
+            // iframe.contentWindow.document.getElementById('main-body').innerHTML = '';
+
+            
+            // iframe.contentWindow.document.getElementById('main-body').innerHTML = '';
+            console.log(result);
+            console.log(scheme);
+            console.log(views);
+        }
+
+    </script>
+
+</head>
+<body style="padding: 0; margin: 0;">
+</body>
+</html>

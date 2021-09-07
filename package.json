@@ -1,0 +1,31 @@
+{
+  "name": "resume_customizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "debug": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "html-pdf": "^3.0.1",
+    "html-pdf-node": "^1.0.7",
+    "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "jspdf": "^2.3.1",
+    "pdfmake": "^0.2.0",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "puppeteer": "^10.1.0",
+    "sequelize": "^6.6.5"
+  }
+}
