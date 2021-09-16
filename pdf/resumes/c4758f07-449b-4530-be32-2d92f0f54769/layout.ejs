@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow: hidden;">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
@@ -117,9 +117,9 @@
                         </div>
                      <% } %>
     
-                     <% if (typeof residence != "undefined") { %>
+                     <% if (typeof location != "undefined") { %>
                         <div style="display: flex; margin-left: auto;">
-                            <p style="font-size: var(--p-font-length); margin-right: 5px;"><%= residence %></p>
+                            <p style="font-size: var(--p-font-length); margin-right: 5px;"><%= location %></p>
                             <span style="font-size: var(--p-font-length); margin-top: 2px; width: 15px; text-align: center;"  class="fas fa-map-pin" class="icon"></span>                    
                         </div>
                      <% } %>
@@ -152,16 +152,16 @@
 
                                                 <% if(section.date || section.location) { %>
                                                     <div style="font-size: 10px;display: flex; justify-content: space-between;">
-                                                        <% if(section.date) { %>
-                                                            <p><%=section.date.from%> - <%=section.date.to%></p>
+                                                        <% if(section?.date?.from && section?.date?.to) { %>
+                                                            <p><%=section?.date?.from%> - <%=section?.date?.to%></p>
                                                         <% } %>
-                                                        <% if(section.location) { %>
+                                                        <% if(section?.location) { %>
                                                             <p><%=section.location%></p>
                                                         <% } %>
                                                     </div>
                                                 <% } %>
 
-                                                <% if(section.smallText) { %>
+                                                <% if(section?.smallText) { %>
                                                     <% for(let smallText of section.smallText) { %>
                                                         <div style="font-size: 10px;display: flex; justify-content: space-between;">
                                                                 <% for(let text of smallText) { %>
@@ -175,21 +175,23 @@
                                                 <% if(section.list) { %>
                                                     <% for(let list of section.list) { %>
                                                         <ul style="margin-left: 18px;">
-                                                            <li class="mb-4px">
-                                                                <div style="margin-left: -6px;" class="set-list-position">
-                                                                    <p>
-                                                                        <% if(list.heading) { %>
-                                                                            <span style="font-weight: bold; font-size: var(--h-font-length);">
-                                                                                <%= list.heading %>
+                                                            <% if(list?.heading || list?.paragraph) { %>
+                                                                <li class="mb-4px">
+                                                                    <div style="margin-left: -6px;" class="set-list-position">
+                                                                        <p>
+                                                                            <% if(list.heading) { %>
+                                                                                <span style="font-weight: bold; font-size: var(--h-font-length);">
+                                                                                    <%= list.heading %>
+                                                                                </span>
+                                                                                <span>-</span>
+                                                                            <% } %>
+                                                                            <span style="font-size: var(--p-font-length);">
+                                                                                <%= list.paragraph %>
                                                                             </span>
-                                                                            <span>-</span>
-                                                                        <% } %>
-                                                                        <span style="font-size: var(--p-font-length);">
-                                                                            <%= list.paragraph %>
-                                                                        </span>
-                                                                    </p>
-                                                                </div>
-                                                            </li>
+                                                                        </p>
+                                                                    </div>
+                                                                </li>
+                                                            <% } %>
                                                         </ul>
                                                     <% } %>
                                                 <% } else if (section.bulletList) { %>
@@ -212,9 +214,9 @@
                                         <% } %>
                                     <% } %>
 
-                                     <% if(item.skills) { %>
+                                     <% if(item.chips) { %>
                                         <div class="toast" style="margin-top: 15px;">
-                                            <% for(let chip of item.skills) { %>
+                                            <% for(let chip of item.chips) { %>
                                                 <span style="display: inline-block; background-color: rgb(143, 138, 138); color: #fff; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);"><%=chip.name%></span>
                                             <% } %>
                                         </div>

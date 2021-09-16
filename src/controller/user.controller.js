@@ -49,6 +49,22 @@ const UserController = () => {
 
     const router = express.Router();
 
+    router.get('isAuthorized', authorize ,async (req, res) => {
+        //@ts-ignore
+        // const { id: userId } = req.user;
+        
+        // const { User } = db;
+        
+        // const result = await User.findOne({
+        //     where: {
+        //         id: userId
+        //     }
+        // });
+
+        if(result) return res.status(200).send({ message: "user is authorized" });
+        // return res.status(401).send({ message: "user is unauthorized" }); 
+    });
+
     router.post('/register', validator(createUser) , async (req, res) => {
         const { email, password } = req.body;
         const { User } = db;

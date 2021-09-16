@@ -39,6 +39,18 @@ const ResumeController = () => {
         res.send(resume);
     });
 
+    router.get('/getById', authorize, async (req,res) => {
+        const { id: resumeId } = req.query;
+        const { Resume } = db;
+        const resume = await Resume.findOne({
+            where: {
+                id: resumeId 
+            }
+        });
+
+        return res.status(200).send(resume);
+    });
+
     router.get('/get-all-userresumes', authorize , async (req, res) => {
         const { UserResume, Resume } = db;
         //@ts-ignore
@@ -75,15 +87,20 @@ const ResumeController = () => {
         const { id: userResumeId } = req.query;
         //@ts-ignore
         const { id: userId } = req.user;
-        const { UserResume } = db;
+        const { UserResume, Resume } = db;
 
         try{
             const result = await UserResume.findOne({
                 where: {
                     id: userResumeId
-                }
+                },
+                include: [
+                    {
+                        model: Resume
+                    }
+                ]
             });
-    
+
             return res.send(result);
         }catch(err){
             return res.status(500).send({
@@ -180,7 +197,7 @@ const ResumeController = () => {
             const htmlResult = await new Promise((resolve, reject) => {
                 ejs.renderFile(`${appRoot}/pdf/resumes/${resumeId}/layout.ejs`, body, {}, async function(err, htmlResult){
                     if(err) reject(err);
-
+                    // res.send(htmlResult);
                     resolve(htmlResult);
                 });
             });
@@ -194,6 +211,7 @@ const ResumeController = () => {
             await userResume.update({
                 htmlFile: htmlFileName
             });
+
 
             res.status(200).send({
                 id: userResumeId,
@@ -235,6 +253,10 @@ const ResumeController = () => {
             const { rules } = userResume.Resume;
 
             if (!verifyRules(body, rules)) return res.status(500).send('Invalid Body');
+
+            await userResume.update({
+                BodyJson: body
+            });
 
 
             const htmlResult = await new Promise((resolve, reject) => {
@@ -348,6 +370,43 @@ const ResumeController = () => {
         }catch(err){
             return res.status(500).send({ message: err.message, name: err.name });
         }        
+    });
+
+
+    router.get('/get-html', authorize, async (req, res) => {
+        const { id: userResumeId } = req.query;
+        //@ts-ignore
+        const { id: userId } = req.user;
+
+        const {UserResume} = db;
+        
+        const userResume = await UserResume.findOne({
+            where: {
+                id: userResumeId
+            },
+            attributes: ['htmlFile']
+        });
+
+        const {htmlFile} = userResume; 
+
+        res.sendFile(`${appRoot}/pdf/users/${userId}/html/${htmlFile}`);
+
+    });
+
+    router.delete('/delete-userresume', authorize, async (req, res) => {
+        const { id: userResumeId } = req.query;
+        const { UserResume } = db;
+        try{
+            await UserResume.destroy({
+                where: {
+                    id: userResumeId
+                }
+            });
+
+            res.send();
+        }catch(e){
+            res.status(500).send();
+        }
     });
 
     // this code has been broken into two other api's (save-resume-html and save-resume-pdf)

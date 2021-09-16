@@ -1,22 +1,8 @@
-const fs = require('fs')
-const utils = require('util')
-const puppeteer = require('puppeteer')
 const cors = require('cors');
-const readFile = utils.promisify(fs.readFile);
-const writeFile = utils.promisify(fs.writeFile);
-const makeDir = utils.promisify(fs.mkdir);
-const ejs = require('ejs');
-
-
 const express = require('express');
 const apiRouter = require('./src/controller');
 
-
-
 const app = express();
-
-
-
 
 (async () => {
     const db = require('./src/database/models');
@@ -25,8 +11,9 @@ const app = express();
         await db.sequelize.authenticate();
 
         app.use(express.json());
-        app.use(cors());
+        app.use(cors({ origin: 'http://localhost:4200' }));
         app.use(express.static('./node_modules/@fortawesome/fontawesome-free/css/all.css'));
+        app.use(express.static(`${__dirname}/public`));
 
         app.use('/api/v1', apiRouter());
 

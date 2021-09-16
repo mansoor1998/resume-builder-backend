@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow: hidden;">
 
 <head>
 	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
@@ -242,51 +242,59 @@
                             <% if (item.type === "CustomSection") { %>
                                 <div class="section">
                                     <h2 style="margin: 0; padding-bottom: 1px; "><%= item.title %></h2>
+                                    <% if(item?.section) { %>
+                                        <% for(let section of item?.section) { %>
+                                            <div style="margin-bottom: 5px;">
+                                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;"><%= section?.title %></p>
+                                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)"><%= section?.subtitle %></p>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    <% if (section?.date?.from && section?.date?.to) { %>
+                                                        <p style="margin: 0"><%= section?.date?.from %> - <%= section?.date?.to %></p>
+                                                    <% } %>
+                                                    <% if(section?.location) { %>
+                                                        <p style="margin: 0"><%= section?.location %></p>
+                                                    <% } %>
+                                                </div>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    <!-- <p style="margin: 0">Project and Task</p> -->
+                                                </div>
 
-                                    <% for(let section of item.section) { %>
-                                        <div style="margin-bottom: 5px;">
-                                            <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;"><%= section.title %></p>
-                                            <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)"><%= section.subtitle %></p>
-                                            <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
-                                                <!-- <p style="margin: 0">12/2019 - 3/2021</p> -->
-                                                <p style="margin: 0"><%= section.location %></p>
+                                                <ul style="margin-left: 18px; padding: 0;">
+                                                    <% for(let list of section?.list) { %>
+                                                        <% if(list?.heading || list?.paragraph) { %>
+                                                            <li class="mb-4px">
+                                                                <div style="margin-left: -6px;" class="set-list-position">
+                                                                    <p>
+                                                                        <% if(list?.heading){ %>
+                                                                            <span style="font-weight: bold; font-size: var(--h-font-length);">
+                                                                                <%= list?.heading %>
+                                                                            </span>
+                                                                            <span>-</span>
+                                                                        <% } %>
+                                                                        <span style="font-size: var(--p-font-length);">
+                                                                            <%= list?.paragraph %>
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        <% } %>
+                                                    <% } %>
+                                                </ul>
+
                                             </div>
-                                            <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
-                                                <!-- <p style="margin: 0">Project and Task</p> -->
-                                            </div>
-
-                                            <ul style="margin-left: 18px; padding: 0;">
-                                                <% for(let list of section.list) { %>
-                                                    <li class="mb-4px">
-                                                        <div style="margin-left: -6px;" class="set-list-position">
-                                                            <p>
-                                                                <% if(list.heading){ %>
-                                                                    <span style="font-weight: bold; font-size: var(--h-font-length);">
-                                                                        <%= list.heading %>
-                                                                    </span>
-                                                                    <span>-</span>
-                                                                <% } %>
-                                                                <span style="font-size: var(--p-font-length);">
-                                                                    <%= list.paragraph %>
-                                                                </span>
-                                                            </p>
-                                                        </div>
-                                                    </li>
-                                                <% } %>
-                                            </ul>
-
-                                        </div>
+                                        <% } %>
                                     <% } %>
-
                                 </div>
                             <% } %>
-                            <% if(item.type === "IntrestSection") { %>
+                            <% if(item?.type === "InterestSection") { %>
                                 <div style="margin-bottom: 35px;" class="section">
                                     <h2 style="margin: 0; padding-bottom: 1px; "><%= item.title %></h2>
             
                                     <div class="toast" style="margin-top: 15px;">
-                                        <% for(let list of item.list) { %>
-                                            <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);"><%= list.name %></span>
+                                        <% if(item?.chips) { %>
+                                            <% for(let chip of item?.chips) { %>
+                                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);"><%= chip.name %></span>
+                                            <% } %>
                                         <% } %>
                                     </div>
                                 </div>
