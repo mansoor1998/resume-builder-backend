@@ -9,6 +9,10 @@ const makeDir = util.promisify(fs.mkdir);
 const writeFile = util.promisify(fs.writeFile);
 const puppeteer = require('puppeteer');
 const verifyRules = require('../../utilities/verify-rules');
+const sharp = require('sharp');
+
+
+
 // const { Sequelize } = require('sequelize');
 
 const ResumeController = () => {
@@ -68,10 +72,11 @@ const ResumeController = () => {
                     }
                 ],
                 attributes: [ 
-                    'id', 'userId', 'resumeId', 'createdAt', 'updatedAt',
+                    'id', 'userId', 'resumeId', 'htmlFile' ,'createdAt', 'updatedAt', [ 'imagePath', 'userResumeImagePath' ],
                     [ db.Sequelize.literal('"Resume"."imagePath"'), 'imagePath' ], 
                     [ db.Sequelize.literal('"Resume"."fileName"'), 'fileName' ]  
-                ]
+                ],
+                order: [ ['createdAt', 'DESC'] ]
             });
     
             return res.send(resumes);    
@@ -167,6 +172,9 @@ const ResumeController = () => {
 
         const { UserResume, Resume } = db;
 
+        let jpgPath = '';
+        let renderPath = '';
+
         try {
 
             const resume = await Resume.findOne({
@@ -208,20 +216,24 @@ const ResumeController = () => {
             const renderPathHTML  = `${appRoot}/pdf/users/${userId}/html/${htmlFileName}`;
             await writeFile(renderPathHTML, htmlResult);
 
-            await userResume.update({
-                htmlFile: htmlFileName
-            });
+            jpgPath = htmlFileName?.split('.')[0] + '.jpg';
+            renderPath = renderPathHTML;
 
+            await userResume.update({
+                htmlFile: htmlFileName,
+                imagePath: jpgPath
+            });
 
             res.status(200).send({
                 id: userResumeId,
                 resumeId: resumeId
             });
-
         }catch(err) {
             return res.status(500).send({ message: err.message });
         }
-    });
+
+        resizeImage(renderPath, jpgPath, userId);
+    }); 
 
     /**
      * updates the existing html result into database.
@@ -254,8 +266,12 @@ const ResumeController = () => {
 
             if (!verifyRules(body, rules)) return res.status(500).send('Invalid Body');
 
-            await userResume.update({
-                BodyJson: body
+            userResume.BodyJson = body;
+
+            await UserResume.update(userResume, {
+                where: {
+                    id: userResumeId
+                }
             });
 
 
@@ -553,9 +569,36 @@ const ResumeController = () => {
         await browser.close();
     });
 
-    
+    router.get('/get-userresume-image', authorize, async (req, res) => {
+        //@ts-ignore
+        const { id: userId } = req.user;
+        const { id: imagePath } = req.query;
+        res.sendFile(`${appRoot}/pdf/users/${userId}/image/${imagePath}`);
+    });
 
     return router;
 };
+
+async function resizeImage(renderPathHTML, imgPath, userId){
+     // extra code
+     const browser = await puppeteer.launch()
+     const page = await browser.newPage();
+
+     await page.setViewport({width: 793, height: 1122});
+     await page.goto(renderPathHTML,  {
+         waitUntil: 'networkidle0'
+     });
+     const screenshot =  await page.screenshot({
+         fullPage: true
+     });
+     await browser.close();
+     // @ts-ignore
+     // fs.writeFileSync('example.png', screenshot);
+
+     
+     sharp(screenshot)
+     .resize(400, 566)
+     .toFile(`${appRoot}/pdf/users/${userId}/image/${imgPath}`)
+}
 
 module.exports = ResumeController;
