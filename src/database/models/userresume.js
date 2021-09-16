@@ -42,7 +42,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     BodyJson: DataTypes.JSONB,
     htmlFile: DataTypes.STRING,
-    pdfFile: DataTypes.STRING
+    pdfFile: DataTypes.STRING,
+    imagePath: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'UserResume',
