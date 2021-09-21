@@ -36,7 +36,7 @@ const ResumeController = () => {
         res.send( resume );
     });
 
-    router.get('/getall', authorize , async (req, res) => {
+    router.get('/getall' , async (req, res) => {
         const { Resume } = db;
         const resume = await Resume.findAll();
 
@@ -244,6 +244,9 @@ const ResumeController = () => {
         const { id: userId } = req.user;
         const body = req.body;
 
+        let jpgPath = '';
+        let renderPath = '';
+
         try{
             const {UserResume, Resume} = db;
 
@@ -268,11 +271,13 @@ const ResumeController = () => {
 
             userResume.BodyJson = body;
 
-            await UserResume.update(userResume, {
-                where: {
-                    id: userResumeId
-                }
-            });
+            userResume.save();
+
+            // await UserResume.update(userResume, {
+            //     where: {
+            //         id: userResumeId
+            //     }
+            // });
 
 
             const htmlResult = await new Promise((resolve, reject) => {
@@ -289,14 +294,16 @@ const ResumeController = () => {
             const renderPathHTML  = `${appRoot}/pdf/users/${userId}/html/${htmlFileName}`;
             await writeFile(renderPathHTML, htmlResult);
 
+            jpgPath = htmlFileName?.split('.')[0] + '.jpg';
+            renderPath = renderPathHTML;
+
             res.status(200).send();
 
         } catch(err){
             return res.status(500).send({ message: err.message });
         }
 
-        
-
+        resizeImage(renderPath, jpgPath, userId);
     });
 
     /**
