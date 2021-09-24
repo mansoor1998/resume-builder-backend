@@ -10,6 +10,7 @@ const writeFile = util.promisify(fs.writeFile);
 const puppeteer = require('puppeteer');
 const verifyRules = require('../../utilities/verify-rules');
 const sharp = require('sharp');
+const { google } = require('googleapis');
 
 
 
@@ -599,10 +600,10 @@ async function resizeImage(renderPathHTML, imgPath, userId){
          fullPage: true
      });
      await browser.close();
-     // @ts-ignore
-     // fs.writeFileSync('example.png', screenshot);
 
-     
+     await makeDir(`${appRoot}/pdf/users/${userId}/image`, { recursive: true });
+
+     // @ts-ignore
      sharp(screenshot)
      .resize(400, 566)
      .toFile(`${appRoot}/pdf/users/${userId}/image/${imgPath}`)
