@@ -29,7 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     username: DataTypes.STRING,
     password: DataTypes.STRING,
     email: DataTypes.STRING,
-    isActive: DataTypes.BOOLEAN
+    isActive: DataTypes.BOOLEAN,
+    verified: DataTypes.BOOLEAN,
+    isGoogleAuth: DataTypes.BOOLEAN 
   }, {
     sequelize,
     modelName: 'User',

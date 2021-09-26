@@ -6,28 +6,38 @@ const jwt = require('jsonwebtoken');
 const validator = require('../middleware/validator');
 const { createUser } = require('./validator/user.validator');
 const authorize = require('../middleware/authorize');
+const { getGoogleAuthUrl, getGoogleUserData } = require('../../utilities/google-util');
 
+const {OAuth2Client} = require('google-auth-library');
  
 
 const UserController = () => {
 
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const router = express.Router();
+
 
     /**
      * 
-     * @param { {id: string, email: string} } data 
+     * @param { {id: string, email: string, verified: boolean, isGoogleAuth: boolean} } data 
      * @returns {string}
      */
     const signInToken = (data) => {
         const id = data.id;
         const email = data.email;
 
-        return jwt.sign(
-            { id:id, email: email },
-            process.env.TOKEN_KEY,
-            {
-              expiresIn: "12h",
-            }
-        );
+        try{
+            return jwt.sign(
+                { id:id, email: email },
+                process.env.TOKEN_KEY,
+                {
+                  expiresIn: "12h",
+                }
+            );    
+        } catch(e) {
+            throw e;
+        }
+
     }
 
     const hashPassword = async (password) => {
@@ -47,7 +57,6 @@ const UserController = () => {
         }
     }
 
-    const router = express.Router();
 
     router.get('isAuthorized', authorize ,async (req, res) => {
         //@ts-ignore
@@ -87,7 +96,7 @@ const UserController = () => {
             });
             await build.save();    
 
-            const token = signInToken({id: build.id, email: build.email});
+            const token = signInToken({id: build.id, email: build.email, verified: build.verified, isGoogleAuth: build.isGoogleAuth});
 
             return res.status(200).send({
                 jwt: token,
@@ -112,17 +121,17 @@ const UserController = () => {
                 email: email,
             },
             attributes: [
-                'id', 'email', 'password'
+                'id', 'email', 'password', 'verified', 'isGoogleAuth'
             ]
         });
 
-        if(!user) res.status(404).send({ "message": "Invalid Email or Password" });
+        if(!user || !user?.password) res.status(404).send({ "message": "Invalid Email or Password" });
 
         const validPass = await bcrypt.compare( password, user.password );
 
         if(!validPass) res.status(404).send({ "message": "Invalid Email or Password" });
 
-        const token = signInToken({id: user.id, email: user.email});
+        const token = signInToken({id: user.id, email: user.email, verified: user.verified, isGoogleAuth: user.isGoogleAuth});
 
         return res.status(200).send({
             jwt: token
@@ -133,6 +142,72 @@ const UserController = () => {
         //@ts-ignore
         return res.status(200).send(req.user);
     });
+
+    router.get('/openauth/google', async (req, res) => {
+        const url = getGoogleAuthUrl();
+        res.send(url);
+    });
+
+    router.post('/openauth/login', async (req, res)=> {
+        const { accessToken } = req.body;
+
+        const { User } = db;
+
+        let ticket = null;
+
+        try{
+            ticket = await client.verifyIdToken({
+                idToken : accessToken,
+                audience : process.env.GOOGLE_CLIENT_ID
+            });    
+        }catch(e) {
+            return res.status(500).send({ message: "Internal Server Error" });
+        }
+
+        
+        const payload = ticket.getPayload();
+
+        const email = payload['email'];
+        const firstName = payload['given_name'];
+        const lastName = payload['family_name'];
+
+
+        let user = await User.findOne({
+            where: {
+                email: email
+            }
+        });
+
+
+        if (user && !user?.isGoogleAuth) {
+            return res.status(424).send({ "message": "The email has already been registered" });
+        }
+
+
+        if(!user) {
+            user = User.build({
+                email: email,
+                verified: true,
+                isGoogleAuth: true
+            });
+            await user.save();    
+        }
+
+        try{
+            const token = signInToken({id: user.id, email: user.email, verified: user.verified, isGoogleAuth: user.isGoogleAuth});
+
+            return res.status(200).send({
+                jwt: token,
+                isActive: user.isActive
+            });
+        } catch(e){
+            return res.status(500).send({ "message": "Internal Server Error" });
+        }
+    })
+
+    router.get('/callback', async (req, res) => {
+        res.send();
+    })
 
     return router;
 };
