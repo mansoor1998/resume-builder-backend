@@ -14,11 +14,16 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "resumebuilder_rw",
-    "password": "tie6Yai8a",
-    "database": "resumebuilder",
-    "host": "pgsql.hrz.tu-chemnitz.de",
+    "username": "dctmezpaeofdyf",
+    "password": "a8bc5465832458556e408494c6eca6b534f6aeea4fa6164ea2e3540eec60ac4d",
+    "database": "daq0jkdipja3hu",
+    "host": "ec2-34-199-209-37.compute-1.amazonaws.com",
     "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "rejectUnauthorized": false
+      }
+    },
     "logging": false
   }
 }

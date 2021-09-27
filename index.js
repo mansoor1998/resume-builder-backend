@@ -3,7 +3,7 @@ const express = require('express');
 const apiRouter = require('./src/controller');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 (async () => {
     const db = require('./src/database/models');
 
@@ -16,7 +16,12 @@ const PORT = process.env.PORT || 5000;
         app.use(express.static(`${__dirname}/public`));
 
         app.use('/api/v1', apiRouter());
-        console.log(PORT);
+
+        app.get('/', (req, res) => {
+            return res.send('app is running');
+        });
+
+        // console.log(PORT);
         app.listen(PORT, '0.0.0.0', function() { console.log('the app is running'); });
 
     }catch(e){
@@ -27,11 +32,11 @@ const PORT = process.env.PORT || 5000;
 })();
 
 
-app.post('/load-view', (req, res) => {
-    const { path, filename } = req.body;
-    res.setHeader('Content-Type', 'text/html');
-    res.sendFile(`${__dirname}/pdf/resumes/${path}/${filename}`);
-});
+// app.post('/load-view', (req, res) => {
+//     const { path, filename } = req.body;
+//     res.setHeader('Content-Type', 'text/html');
+//     res.sendFile(`${__dirname}/pdf/resumes/${path}/${filename}`);
+// });
 
 // app.get('/resume-body', (req, res) => {
 //     res.setHeader('Content-Type', 'text/html');
