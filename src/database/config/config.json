@@ -14,11 +14,11 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
+    "username": "resumebuilder_rw",
+    "password": "tie6Yai8a",
+    "database": "resumebuilder",
+    "host": "pgsql.hrz.tu-chemnitz.de",
+    "dialect": "postgres",
     "logging": false
   }
 }
