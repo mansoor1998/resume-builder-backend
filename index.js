@@ -3,7 +3,7 @@ const express = require('express');
 const apiRouter = require('./src/controller');
 
 const app = express();
-const PORT = Number(process.env.PORT) || 5000;
+const PORT = process.argv[2] || Number(process.env.PORT) || 5000;
 (async () => {
     const db = require('./src/database/models');
 
