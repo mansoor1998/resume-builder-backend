@@ -335,7 +335,11 @@ const ResumeController = () => {
 
         // create a pdf file from html and store it in directory.
         const browser = await puppeteer.launch({
-            headless: true
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+            ],
         });
         const page = await browser.newPage();
 
@@ -477,7 +481,11 @@ const ResumeController = () => {
 
             // create a pdf file from html and store it in directory.
             const browser = await puppeteer.launch({
-                headless: true
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                ],
             });
             const page = await browser.newPage();
     
@@ -557,7 +565,11 @@ const ResumeController = () => {
 
         // create a pdf file from html and store it in directory.
         const browser = await puppeteer.launch({
-            headless: true
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+            ],
         });
         const page = await browser.newPage();
 
@@ -589,7 +601,12 @@ const ResumeController = () => {
 
 async function resizeImage(renderPathHTML, imgPath, userId){
      // extra code
-     const browser = await puppeteer.launch()
+     const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+        ],
+     })
      const page = await browser.newPage();
 
      await page.setViewport({width: 793, height: 1122});
