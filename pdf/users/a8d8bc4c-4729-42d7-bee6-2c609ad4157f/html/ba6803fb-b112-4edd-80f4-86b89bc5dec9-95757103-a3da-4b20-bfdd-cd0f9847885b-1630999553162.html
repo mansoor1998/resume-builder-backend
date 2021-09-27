@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden;">
+
+<head>
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+		integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+	<style>
+		@page {
+			size: A4 portrait;
+			margin: 0;
+		}
+
+		/*!
+        * HTML-Sheets-of-Paper (https://github.com/delight-im/HTML-Sheets-of-Paper)
+        * Copyright (c) delight.im (https://www.delight.im/)
+        * Licensed under the MIT License (https://opensource.org/licenses/MIT)
+        */
+
+		@import "sheets-of-paper.css";
+
+		.page {
+			/* Styles for better appearance on screens only -- are reset to defaults in print styles later */
+
+			/* Reflect the paper width in the screen rendering (must match size from @page rule) */
+			width: 21cm;
+			/* Reflect the paper height in the screen rendering (must match size from @page rule) */
+			min-height: 29.7cm;
+
+			/* Reflect the actual page margin/padding on paper in the screen rendering (must match margin from @page rule) */
+			padding-left: 2cm;
+			padding-top: 2cm;
+			padding-right: 2cm;
+			padding-bottom: 2cm;
+		}
+	</style>
+
+	<style>
+		:root {
+			--p-font-length: 11px;
+			--h-font-length: 11px;
+			--title-font-length: 14px;
+			--subtitle-font-length: 12px;
+		}
+
+		.medium {
+			--p-font-length: 13px;
+			--h-font-length: 13px;
+			--title-font-length: 16px;
+			--subtitle-font-length: 14px;
+
+		}
+
+		.small {
+			--p-font-length: 11px;
+			--h-font-length: 11px;
+			--title-font-length: 14px;
+			--subtitle-font-length: 12px;
+		}
+
+        body,html {
+            font-family: 'Ubuntu', 'Courier New', Courier, monospace;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        .wrapper-padding-top {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .title {
+            font-size: var(--title-font-length);
+        }
+
+        .sub-title {
+            font-size: var(--subtitle-font-length);
+        }
+
+
+        .text {
+            font-size: var(--p-font-length);
+        }
+
+        header {
+            background-color: #313c4e;
+            padding: 30px 30px 10px 30px;
+            color: white;
+        }
+
+        header .subtitle {
+            position: relative;
+            display: inline-block;
+        }
+
+        header .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background-color: #fff;
+            width: calc(100% + 80px);
+            border-radius: 5px; 
+        }
+
+        section{
+            display: flex;
+            padding: 10px;
+            padding-top: 20px;
+        }
+
+        .sub-heading {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sub-heading::after {
+            content: '';
+            background-color: #313c4e;
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            border-radius: 5px;
+        }
+
+        .icon {
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .list-position {
+			position: relative;
+			top: -1px;
+		}
+
+        .column {
+            margin-right: 15px;
+        }
+
+        .column .section h2{
+            position:relative;
+        }
+
+        .column .section h2::before{
+            content: '';
+            width: 100px;
+            height: 1px;
+            position: absolute;
+            background-color:  #313c4e;
+            bottom: 0;
+        }
+	</style>
+</head>
+
+<body>
+	<div class="medium">
+        <header>
+            <div class="title">
+                
+                    <h1 style="margin: 0; margin-bottom: 5px;">John Doe</h1>
+                
+            </div>
+            <div class="subtitle">
+                
+                    <h3 style="margin: 5px 0;">Project Manager</h3>
+                
+            </div>
+
+            <div class="description">
+                
+                    <p stlye="font-weight: bold;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sollicitudin, neque in porta hendrerit, mauris erat rhoncus dolor, quis aliquet nisi elit elementum erat. Nam aliquam, magna quis finibus dignissim, purus est ultrices nunc, non aliquet leo diam in risus. </p>
+                
+            </div>
+        </header>
+
+        <section>
+            <div style="flex-basis: 280px; padding: 0 10px;">
+                <div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="fas fa-envelope icon text"></span>
+                        
+                            <p class="text">jhondoe@gmail.com</p>
+                        
+                    </div>
+    
+                    <div style="display: flex; align-items: center;">
+                        <span class="fas fa-mobile icon text"></span>
+                        
+                            <p class="text">0710 2569 458 521</p>
+                        
+                    </div>
+    
+                    <div style="display: flex; align-items: center;">
+                        <span class="fas fa-map-pin icon"></span>
+                        
+                            <p class="text">Berlin, Germany</p>
+                        
+                    </div>
+                </div>
+
+                
+                    <div style="margin-top: 20px;" class="skills-section">
+                        <h2 class="sub-heading title">SKILLS</h2>
+                        <div class="skills">
+                            
+                                <span style="display: inline-block; background-color: rgb(143, 138, 138); color: #fff; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Frontend Engineering</span>
+                            
+                                <span style="display: inline-block; background-color: rgb(143, 138, 138); color: #fff; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Backend Engineering</span>
+                            
+                                <span style="display: inline-block; background-color: rgb(143, 138, 138); color: #fff; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Developer Opertions</span>
+                            
+                                <span style="display: inline-block; background-color: rgb(143, 138, 138); color: #fff; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Frontend</span>
+                            
+                                <span style="display: inline-block; background-color: rgb(143, 138, 138); color: #fff; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Backend</span>
+                            
+                        </div>
+                    </div>
+                
+
+                
+                    <div style="margin-top: 20px;" class="skills-section">
+                        <h2 class="sub-heading title">LANGUGES</h2>
+                        <div class="skills" style="margin-top: 5px;">
+                            <ul style="padding: 0 0 0 5px;margin: 0; list-style-type: none;">
+                                
+                                    <li style="margin-bottom: 10px">
+                                        <div>
+                                            <p style="font-size: var(--p-font-length); margin: 0; font-weight: bold;">
+                                                English
+                                            </p>
+                                        </div>
+                                    </li>
+                                
+                                    <li style="margin-bottom: 10px">
+                                        <div>
+                                            <p style="font-size: var(--p-font-length); margin: 0; font-weight: bold;">
+                                                German
+                                            </p>
+                                        </div>
+                                    </li>
+                                
+                                    <li style="margin-bottom: 10px">
+                                        <div>
+                                            <p style="font-size: var(--p-font-length); margin: 0; font-weight: bold;">
+                                                Russian
+                                            </p>
+                                        </div>
+                                    </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+
+                
+
+                    <div style="flex: 1" class="column">
+                        
+                            
+                                <div class="section">
+                                    <h2 style="margin: 0; padding-bottom: 1px; ">Experience</h2>
+                                    
+                                        
+                                            <div style="margin-bottom: 5px;">
+                                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Software Engineer</p>
+                                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">Google</p>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    
+                                                        <p style="margin: 0">Mar 2016 - Mar 2018</p>
+                                                    
+                                                    
+                                                        <p style="margin: 0">Berlin, Germany</p>
+                                                    
+                                                </div>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    <!-- <p style="margin: 0">Project and Task</p> -->
+                                                </div>
+
+                                                <ul style="margin-left: 18px; padding: 0;">
+                                                    
+                                                        
+                                                            <li class="mb-4px">
+                                                                <div style="margin-left: -6px;" class="set-list-position">
+                                                                    <p>
+                                                                        
+                                                                        <span style="font-size: var(--p-font-length);">
+                                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sollicitudin, neque in porta hendrerit, mauris erat rhoncus dolor, quis aliquet nisi elit elementum erat. Nam aliquam, magna quis finibus dignissim, purus est ultrices nunc, non aliquet leo diam in risus. 
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        
+                                                    
+                                                        
+                                                            <li class="mb-4px">
+                                                                <div style="margin-left: -6px;" class="set-list-position">
+                                                                    <p>
+                                                                        
+                                                                        <span style="font-size: var(--p-font-length);">
+                                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sollicitudin, neque in porta hendrerit, mauris erat rhoncus dolor, quis aliquet nisi elit elementum erat. Nam aliquam, magna quis finibus dignissim, purus est ultrices nunc, non aliquet leo diam in risus. 
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        
+                                                    
+                                                </ul>
+
+                                            </div>
+                                        
+                                            <div style="margin-bottom: 5px;">
+                                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Project Manager</p>
+                                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">Tesla</p>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    
+                                                        <p style="margin: 0">Mar 2020 - Current</p>
+                                                    
+                                                    
+                                                        <p style="margin: 0">Paderborn, Germany</p>
+                                                    
+                                                </div>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    <!-- <p style="margin: 0">Project and Task</p> -->
+                                                </div>
+
+                                                <ul style="margin-left: 18px; padding: 0;">
+                                                    
+                                                        
+                                                            <li class="mb-4px">
+                                                                <div style="margin-left: -6px;" class="set-list-position">
+                                                                    <p>
+                                                                        
+                                                                        <span style="font-size: var(--p-font-length);">
+                                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sollicitudin, neque in porta hendrerit, mauris erat rhoncus dolor, quis aliquet nisi elit elementum erat. Nam aliquam, magna quis finibus dignissim, purus est ultrices nunc, non aliquet leo diam in risus. 
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        
+                                                    
+                                                        
+                                                            <li class="mb-4px">
+                                                                <div style="margin-left: -6px;" class="set-list-position">
+                                                                    <p>
+                                                                        
+                                                                        <span style="font-size: var(--p-font-length);">
+                                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sollicitudin, neque in porta hendrerit, mauris erat rhoncus dolor, quis aliquet nisi elit elementum erat. Nam aliquam, magna quis finibus dignissim, purus est ultrices nunc, non aliquet leo diam in risus. 
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        
+                                                    
+                                                </ul>
+
+                                            </div>
+                                        
+                                    
+                                </div>
+                            
+                             
+                        
+                            
+                                <div class="section">
+                                    <h2 style="margin: 0; padding-bottom: 1px; ">Education</h2>
+                                    
+                                        
+                                            <div style="margin-bottom: 5px;">
+                                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Bachelor</p>
+                                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">University of Berlin</p>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    
+                                                        <p style="margin: 0">Mar 2012 - Jun 2016</p>
+                                                    
+                                                    
+                                                        <p style="margin: 0">Berlin, Germany</p>
+                                                    
+                                                </div>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    <!-- <p style="margin: 0">Project and Task</p> -->
+                                                </div>
+
+                                                <ul style="margin-left: 18px; padding: 0;">
+                                                    
+                                                        
+                                                    
+                                                </ul>
+
+                                            </div>
+                                        
+                                            <div style="margin-bottom: 5px;">
+                                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Master</p>
+                                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">Paderborn University</p>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    
+                                                        <p style="margin: 0">Mar 2017 - Mar 2019</p>
+                                                    
+                                                    
+                                                        <p style="margin: 0">Paderborn, Germany</p>
+                                                    
+                                                </div>
+                                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                    <!-- <p style="margin: 0">Project and Task</p> -->
+                                                </div>
+
+                                                <ul style="margin-left: 18px; padding: 0;">
+                                                    
+                                                        
+                                                    
+                                                </ul>
+
+                                            </div>
+                                        
+                                    
+                                </div>
+                            
+                             
+                        
+                            
+                            
+                                <div style="margin-bottom: 35px;" class="section">
+                                    <h2 style="margin: 0; padding-bottom: 1px; ">Interest</h2>
+            
+                                    <div class="toast" style="margin-top: 15px;">
+                                        
+                                            
+                                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Network Security</span>
+                                            
+                                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Scrum Master</span>
+                                            
+                                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Project Management</span>
+                                            
+                                        
+                                    </div>
+                                </div>
+                             
+                        
+                        <!-- <div class="section">
+                            <h2 style="margin: 0; padding-bottom: 1px; ">EDUCATION</h2>
+
+                            <div style="margin-bottom: 5px;">
+                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Masters in computer science</p>
+                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">Muhammad Ali Jinnah University</p>
+                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                    <p style="margin: 0">12/2019 - 3/2021</p>
+                                    <p style="margin: 0">Karachi, Pakistan</p>
+                                </div>
+                                <ul style="margin-left: 18px; padding: 0;">
+                                    <li class="mb-4px">
+                                        <div style="margin-left: -6px;" class="set-list-position">
+                                            <p>
+                                                <span style="font-size: var(--p-font-length);">
+                                                    I have studied this like a boss
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-bottom: 5px;">
+                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Masters in computer science</p>
+                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">Muhammad Ali Jinnah University</p>
+                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                    <p style="margin: 0">12/2019 - 3/2021</p>
+                                    <p style="margin: 0">Karachi, Pakistan</p>
+                                </div>
+                                <ul style="margin-left: 18px; padding: 0;">
+                                    <li class="mb-4px">
+                                        <div style="margin-left: -6px;" class="set-list-position">
+                                            <p>
+                                                <span style="font-size: var(--p-font-length);">
+                                                    I have studied this like a boss
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-bottom: 5px;">
+                                <p style="font-weight:800; font-size: var(--subtitle-font-length); margin: 3 0;">Masters in computer science</p>
+                                <p style="margin-bottom: 5px; font-size: var(--subtitle-font-length)">Muhammad Ali Jinnah University</p>
+                                <div style="font-size: 10px;display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                    <p style="margin: 0">12/2019 - 3/2021</p>
+                                    <p style="margin: 0">Karachi, Pakistan</p>
+                                </div>
+                                <ul style="margin-left: 18px; padding: 0;">
+                                    <li class="mb-4px">
+                                        <div style="margin-left: -6px;" class="set-list-position">
+                                            <p>
+                                                <span style="font-size: var(--p-font-length);">
+                                                    I have studied this like a boss
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="section" style="margin-bottom: 35px;">
+                            <h3 style="margin-bottom: 5px; font-size: var(--title-font-length)">INTEREST</h3>
+                            <div class="toast" style="margin-top: 15px;">
+                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Backend/Server-Side Programming</span>
+                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Machine Learning</span>
+                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Network Security</span>
+                                <span style="display: inline-block; border: 2px solid #ccc; color: #000; padding: 5px 10px; border-radius: 5px; margin: 3px; font-size: var(--p-font-length);">Web Development</span>
+                            </div>
+                        </div> -->
+                    </div>
+
+                
+
+            
+        </section>
+	</div>
+</body>
+
+</html>
