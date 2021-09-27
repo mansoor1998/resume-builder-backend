@@ -339,6 +339,7 @@ const ResumeController = () => {
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
+                '--disable-web-security'
             ],
         });
         const page = await browser.newPage();
@@ -485,6 +486,7 @@ const ResumeController = () => {
                 args: [
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
+                    '--disable-web-security'
                 ],
             });
             const page = await browser.newPage();
@@ -569,6 +571,7 @@ const ResumeController = () => {
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
+                '--disable-web-security'
             ],
         });
         const page = await browser.newPage();
@@ -605,6 +608,7 @@ async function resizeImage(renderPathHTML, imgPath, userId){
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
+            '--disable-web-security'
         ],
      })
      const page = await browser.newPage();
