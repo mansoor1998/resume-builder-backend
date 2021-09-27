@@ -16,8 +16,8 @@ const PORT = Number(process.env.PORT) || 5000;
         app.use(express.static(`${__dirname}/public`));
 
         app.use('/api/v1', apiRouter());
-
-        app.listen(PORT, "0.0.0.0", function() { console.log('the app is running'); });
+        console.log(PORT);
+        app.listen(PORT, '0.0.0.0', function() { console.log('the app is running'); });
 
     }catch(e){
         throw new Error(e);
