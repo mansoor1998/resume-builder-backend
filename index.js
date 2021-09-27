@@ -17,7 +17,7 @@ const app = express();
 
         app.use('/api/v1', apiRouter());
 
-        app.listen(3000, function() { console.log('the app is running'); });
+        app.listen(process.env.PORT || 3000, function() { console.log('the app is running'); });
 
     }catch(e){
         throw new Error(e);
