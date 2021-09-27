@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
         await db.sequelize.authenticate();
 
         app.use(express.json());
-        app.use(cors({ origin: 'http://localhost:4200' }));
+        app.use(cors({ origin: 'https://app-resume-builder.surge.sh' }));
         app.use(express.static('./node_modules/@fortawesome/fontawesome-free/css/all.css'));
         app.use(express.static(`${__dirname}/public`));
 
