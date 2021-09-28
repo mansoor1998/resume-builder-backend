@@ -23,10 +23,13 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "puppeteer": "^10.1.0",
+    "puppeteer": "^10.4.0",
     "puppeteer-full-page-screenshot": "^1.2.2",
     "query-string": "^7.0.1",
     "sequelize": "^6.6.5",
     "sharp": "^0.29.1"
+  },
+  "engines": {
+    "node": "8"
   }
 }
