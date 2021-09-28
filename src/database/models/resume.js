@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
-
+// additional comment is added
 module.exports = (sequelize, DataTypes) => {
   class Resume extends Model {
     /**
