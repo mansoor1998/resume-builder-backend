@@ -604,30 +604,35 @@ const ResumeController = () => {
 
 async function resizeImage(renderPathHTML, imgPath, userId){
      // extra code
-     const browser = await puppeteer.launch({
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-web-security'
-        ],
-     })
-     const page = await browser.newPage();
+     try{
+        const browser = await puppeteer.launch({
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-web-security'
+            ],
+         })
+         const page = await browser.newPage();
+    
+        //  await page.setViewport({width: 793, height: 1122});
+         await page.goto(renderPathHTML,  {
+             waitUntil: 'networkidle0'
+         });
+         const screenshot =  await page.screenshot({
+             fullPage: true
+         });
+         await browser.close();
+    
+         await makeDir(`${appRoot}/pdf/users/${userId}/image`, { recursive: true });
+    
+         // @ts-ignore
+         sharp(screenshot)
+         .resize(400, 566)
+         .toFile(`${appRoot}/pdf/users/${userId}/image/${imgPath}`)
+     }catch(e){
+         console.error('failed to create image');
+     }
 
-     await page.setViewport({width: 793, height: 1122});
-     await page.goto(renderPathHTML,  {
-         waitUntil: 'networkidle0'
-     });
-     const screenshot =  await page.screenshot({
-         fullPage: true
-     });
-     await browser.close();
-
-     await makeDir(`${appRoot}/pdf/users/${userId}/image`, { recursive: true });
-
-     // @ts-ignore
-     sharp(screenshot)
-     .resize(400, 566)
-     .toFile(`${appRoot}/pdf/users/${userId}/image/${imgPath}`)
 }
 
 module.exports = ResumeController;
