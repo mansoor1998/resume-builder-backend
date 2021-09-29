@@ -11,7 +11,16 @@ const puppeteer = require('puppeteer');
 const verifyRules = require('../../utilities/verify-rules');
 const sharp = require('sharp');
 const { google } = require('googleapis');
+const aws = require('aws-sdk');
+const { reject } = require('async');
 
+
+const spaceEndpoint = new aws.Endpoint('fra1.digitaloceanspaces.com');
+const s3 = new aws.S3({
+    endpoint: spaceEndpoint,
+    accessKeyId: process.env.BUCKET_ACCESS_KEY_ID,
+    secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY
+});
 
 
 // const { Sequelize } = require('sequelize');
@@ -212,28 +221,48 @@ const ResumeController = () => {
             });
 
             // create directory/file and store the html result.
-            await makeDir(`${appRoot}/pdf/users/${userId}/html`, { recursive: true });
+            // await makeDir(`${appRoot}/pdf/users/${userId}/html`, { recursive: true });
             const htmlFileName =  `${userResumeId}-${resumeId}-${Date.now()}.html`;
-            const renderPathHTML  = `${appRoot}/pdf/users/${userId}/html/${htmlFileName}`;
-            await writeFile(renderPathHTML, htmlResult);
+            const renderPathHTML  =  `users/${userId}/html/${htmlFileName}`;  //`${appRoot}/pdf/users/${userId}/html/${htmlFileName}`;
+            // await writeFile(renderPathHTML, htmlResult);
 
-            jpgPath = htmlFileName?.split('.')[0] + '.jpg';
-            renderPath = renderPathHTML;
+            let params = {
+                Body: htmlResult,
+                Bucket: 'resume-builder-space', 
+                Key: renderPathHTML,
+                ACL: 'private'
+            }
 
-            await userResume.update({
-                htmlFile: htmlFileName,
-                imagePath: jpgPath
-            });
+            
 
-            res.status(200).send({
-                id: userResumeId,
-                resumeId: resumeId
-            });
+            s3.putObject(params, async (err, data) => {
+                if(err){
+                    console.error('error => ', err);
+                    return res.status(500).send({ message: 'Internal server error', detail: 'failed to store file in s3 bucket' });
+                }
+
+                jpgPath = htmlFileName?.split('.')[0] + '.jpg';
+                renderPath = renderPathHTML;
+    
+                await userResume.update({
+                    htmlFile: htmlFileName,
+                    imagePath: jpgPath
+                });
+    
+                res.status(200).send({
+                    id: userResumeId,
+                    resumeId: resumeId
+                });
+
+                resizeImage(renderPath, jpgPath, userId);
+        
+                // console.log('data =>', data);
+                // res.stqatus.send('check the logs');
+            })
+
         }catch(err) {
             return res.status(500).send({ message: err.message });
         }
-
-        resizeImage(renderPath, jpgPath, userId);
     }); 
 
     /**
@@ -290,21 +319,37 @@ const ResumeController = () => {
             });
 
             // create directory/file and store the html result.
-            await makeDir(`${appRoot}/pdf/users/${userId}/html`, { recursive: true });
+            // await makeDir(`${appRoot}/pdf/users/${userId}/html`, { recursive: true });
             const htmlFileName =  htmlFile;
-            const renderPathHTML  = `${appRoot}/pdf/users/${userId}/html/${htmlFileName}`;
-            await writeFile(renderPathHTML, htmlResult);
+            const renderPathHTML  = `users/${userId}/html/${htmlFileName}`;;
+            // await writeFile(renderPathHTML, htmlResult);
 
-            jpgPath = htmlFileName?.split('.')[0] + '.jpg';
-            renderPath = renderPathHTML;
+            let params = {
+                Body: htmlResult,
+                Bucket: 'resume-builder-space', 
+                Key: renderPathHTML,
+                ACL: 'private'
+            }
 
-            res.status(200).send();
+            
+
+            s3.putObject(params, async (err, data) => {
+                if(err) { return console.error('error => ', err) }
+                
+                jpgPath = htmlFileName?.split('.')[0] + '.jpg';
+                renderPath = renderPathHTML;
+    
+                res.status(200).send();
+
+                resizeImage(renderPath, jpgPath, userId);
+
+            });
+
 
         } catch(err){
             return res.status(500).send({ message: err.message });
         }
 
-        resizeImage(renderPath, jpgPath, userId);
     });
 
     /**
@@ -331,7 +376,7 @@ const ResumeController = () => {
         const { resumeId } = userResume;
 
         const htmlFileName = userResume.htmlFile;
-        const htmlFilePathDir = `${appRoot}/pdf/users/${userId}/html`;
+        const htmlFilePathDir =  `users/${userId}/html` // `${appRoot}/pdf/users/${userId}/html`;
 
         // create a pdf file from html and store it in directory.
         const browser = await puppeteer.launch({
@@ -344,14 +389,40 @@ const ResumeController = () => {
         });
         const page = await browser.newPage();
 
-        await page.goto(`${htmlFilePathDir}/${htmlFileName}`,  {
+        let data = null;
+
+        try{
+            data = await new Promise(async (resolve, reject) => {
+                s3.getObject({
+                    Bucket: 'resume-builder-space', 
+                    Key: `${htmlFilePathDir}/${htmlFileName}`
+                }, async (err, data) => {
+                    if(err) { reject(err); return; }
+    
+                    resolve(data);
+                });
+            })
+        }catch(err) {
+            console.error('err => ', err);
+        }
+
+        if(!data) { return res.status(500).send({ message: 'Internal Server Error' }); }
+
+        await page.setContent(data?.Body?.toString('ascii'),  {
             waitUntil: 'networkidle0'
         });
+        
+        // await page.goto(`${htmlFilePathDir}/${htmlFileName}`,  {
+        //     waitUntil: 'networkidle0'
+        // });
     
-        await makeDir(`${appRoot}/pdf/users/${userId}/pdf`, { recursive: true });
+        // await makeDir(`${appRoot}/pdf/users/${userId}/pdf`, { recursive: true });
         const pdfFileName = `${userResumeId}-${resumeId}-${Date.now()}.pdf`;
-        const renderPathPdf = `${appRoot}/pdf/users/${userId}/pdf/${pdfFileName}`;
-        await page.pdf({ path: `${renderPathPdf}`, format: 'a4', printBackground: true,  preferCSSPageSize: true,
+        const renderPathPdf = `users/${userId}/pdf/${pdfFileName}` // `${appRoot}/pdf/users/${userId}/pdf/${pdfFileName}`;
+
+        //path: `${renderPathPdf}`,
+
+        const pdfBuffer = await page.pdf({ format: 'a4', printBackground: true,  preferCSSPageSize: true,
             margin: {
                 left: '0',
                 right: '0',
@@ -360,6 +431,15 @@ const ResumeController = () => {
             } 
         })
         await browser.close();
+
+        s3.putObject({
+            Body: pdfBuffer,
+            Bucket: 'resume-builder-space', 
+            Key: renderPathPdf,
+            ACL: 'private'
+        }, (err, data) => {
+            if(err) {  console.error('err => ', err); return; }
+        }) 
 
 
         await userResume.update({
@@ -395,7 +475,18 @@ const ResumeController = () => {
             const fileName = userResume.pdfFile;
     
             res.setHeader('Content-Type', 'application/pdf');
-            res.sendFile(`${appRoot}/pdf/users/${userId}/pdf/${fileName}`);
+
+            s3.getObject({
+                    Bucket: 'resume-builder-space', 
+                    Key: `users/${userId}/pdf/${fileName}`
+            }, (err, data) => {
+                if(err){ return res.status(500).send({ message: 'Internal Server Error' }) }
+
+                return res.send(data?.Body);
+
+            });
+
+            // res.sendFile(`${appRoot}/pdf/users/${userId}/pdf/${fileName}`);
         }catch(err){
             return res.status(500).send({ message: err.message, name: err.name });
         }        
@@ -596,7 +687,16 @@ const ResumeController = () => {
         //@ts-ignore
         const { id: userId } = req.user;
         const { id: imagePath } = req.query;
-        res.sendFile(`${appRoot}/pdf/users/${userId}/image/${imagePath}`);
+
+        s3.getObject({
+            Bucket: 'resume-builder-space', 
+            Key: `users/${userId}/image/${imagePath}`,
+        }, async (err, data) => {
+            if(err) return console.error('err => ', err);
+            return res.send(data?.Body)
+        });
+
+        // res.sendFile(`${appRoot}/pdf/users/${userId}/image/${imagePath}`);
     });
 
     return router;
@@ -613,22 +713,56 @@ async function resizeImage(renderPathHTML, imgPath, userId){
             ],
          })
          const page = await browser.newPage();
+
+
+        const data = await new Promise((resolve, reject) => {
+            s3.getObject({
+                Bucket: 'resume-builder-space', 
+                Key: renderPathHTML,
+            }, (err, data) => {
+                if(err) { reject(err); return; }
+
+                resolve(data);
+                
+                // fs.writeFileSync('resume-image.png', data?.Body);
+        
+                // return res.send('check logs');
+            });
+        });
+
     
+        await page.setContent(data?.Body?.toString('ascii'),  {
+            waitUntil: 'networkidle0'
+        });
+
         //  await page.setViewport({width: 793, height: 1122});
-         await page.goto(renderPathHTML,  {
-             waitUntil: 'networkidle0'
-         });
+        //  await page.goto(renderPathHTML,  {
+        //      waitUntil: 'networkidle0'
+        //  });
          const screenshot =  await page.screenshot({
              fullPage: true
          });
          await browser.close();
     
-         await makeDir(`${appRoot}/pdf/users/${userId}/image`, { recursive: true });
+        //  await makeDir(`${appRoot}/pdf/users/${userId}/image`, { recursive: true });
     
          // @ts-ignore
-         sharp(screenshot)
-         .resize(400, 566)
-         .toFile(`${appRoot}/pdf/users/${userId}/image/${imgPath}`)
+         const imgBuffer = await sharp(screenshot)
+         .resize(400, 566, {
+             fit: 'fill'
+         })
+         .toBuffer();
+
+
+         s3.putObject({
+            Body: imgBuffer,
+            Bucket: 'resume-builder-space', 
+            Key: `users/${userId}/image/${imgPath}`,
+            ACL: 'private'
+         }, (err, data) => {
+                if(err) { console.error('err => ' + err)  }
+         });
+        //  .toFile(`${appRoot}/pdf/users/${userId}/image/${imgPath}`)
      }catch(e){
          console.error('failed to create image');
      }
