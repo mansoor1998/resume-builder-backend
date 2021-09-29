@@ -104,7 +104,8 @@ const UserController = () => {
             });
 
         }catch(err){
-            return res.status(500).send(err);
+            console.error("error => ", err);
+            return res.status(500).send({ message: "Internal Server Error" });
         }
 
     });
@@ -125,17 +126,22 @@ const UserController = () => {
             ]
         });
 
-        if(!user || !user?.password) res.status(404).send({ "message": "Invalid Email or Password" });
+        if(!user || !user?.password) return res.status(404).send({ "message": "Invalid Email or Password" });
 
-        const validPass = await bcrypt.compare( password, user.password );
+        try{
+            const validPass = await bcrypt.compare( password, user.password );
+            if(!validPass) res.status(404).send({ "message": "Invalid Email or Password" });
 
-        if(!validPass) res.status(404).send({ "message": "Invalid Email or Password" });
+            const token = signInToken({id: user.id, email: user.email, verified: user.verified, isGoogleAuth: user.isGoogleAuth});
+    
+            return res.status(200).send({
+                jwt: token
+            });
+        } catch (err) {
+            return res.status(500).send({ message: "Internal Server Error" });
+        }
 
-        const token = signInToken({id: user.id, email: user.email, verified: user.verified, isGoogleAuth: user.isGoogleAuth});
 
-        return res.status(200).send({
-            jwt: token
-        });
     });
 
     router.post('/authorized', authorize ,async (req, res) => {
